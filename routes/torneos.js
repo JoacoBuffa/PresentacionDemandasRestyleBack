@@ -1,50 +1,54 @@
-const express = require('express');
+const express = require("express");
 const { Op, ValidationError } = require("sequelize");
 const router = express.Router();
 const db = require("../base-orm/sequelize-init");
 
 // Obtener todos los torneos
-router.get('/api/torneos', async (req, res) => {
+router.get("/api/torneos", async (req, res) => {
   try {
     let where = {};
-    if (req.query.Nombre_torneo != undefined && req.query.Nombre_torneo !== "") {
+    if (
+      req.query.Nombre_torneo != undefined &&
+      req.query.Nombre_torneo !== ""
+    ) {
       where.Nombre_torneo = {
         [Op.like]: "%" + req.query.Nombre_torneo + "%",
       };
-    }    
+    }
     const Pagina = req.query.Pagina ?? 1;
-    const TamañoPagina = 10;    
+    const TamañoPagina = 10;
     const { count, rows } = await db.torneos.findAndCountAll({
-        attributes: [
-          "ID_Torneo",
-          "Nombre_torneo",
-          "fechaDeFinal",
-          "PromedioGoles",
-          "Finalizado",
-          "Id_Temporada"
-        ],
-        order: [["Nombre_torneo", "ASC"]],
-        where,
-        offset: (Pagina - 1) * TamañoPagina,
-        limit: TamañoPagina,
-      });
-    
-      return res.json({ Items: rows, RegistrosTotal: count });  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los torneos' });
+      attributes: [
+        "ID_Torneo",
+        "Nombre_torneo",
+        "fechaDeFinal",
+        "PromedioGoles",
+        "Finalizado",
+        "Id_Temporada",
+      ],
+      order: [["Nombre_torneo", "ASC"]],
+      where,
+      offset: (Pagina - 1) * TamañoPagina,
+      limit: TamañoPagina,
+    });
+
+    return res.json({ Items: rows, RegistrosTotal: count });
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los torneos" });
   }
 });
 
 // Obtener un empleado por su Id
-router.get('/api/torneos/:id', async (req, res) => {
+router.get("/api/torneos/:id", async (req, res) => {
   try {
     const torneo = await db.torneos.findByPk(req.params.id);
     if (torneo) {
       res.json(torneo);
     } else {
-      res.status(404).json({ error: 'Torneo no encontrado' });
+      res.status(404).json({ error: "Torneo no encontrado" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el torneo' });
+    res.status(500).json({ error: "Error al obtener el torneo" });
   }
 });
 
@@ -73,16 +77,17 @@ router.post("/api/torneos", async (req, res) => {
       fechaDeFinal: req.body.fechaDeFinal,
       PromedioGoles: req.body.PromedioGoles,
       Finalizado: req.body.Finalizado,
-      Id_Temporada: req.body.Id_Temporada
-    
+      Id_Temporada: req.body.Id_Temporada,
     });
     res.status(200).json(data.dataValues); // devolvemos el registro agregado!
   } catch (err) {
     if (err instanceof ValidationError) {
       // si son errores de validación, los devolvemos
-      let messages = '';
-      err.errors.forEach((x) => messages += (x.path ?? 'campo') + ": " + x.message + '\n');
-      res.status(400).json({message : messages});
+      let messages = "";
+      err.errors.forEach(
+        (x) => (messages += (x.path ?? "campo") + ": " + x.message + "\n")
+      );
+      res.status(400).json({ message: messages });
     } else {
       // si son errores desconocidos, los dejamos que los controle el middleware de errores
       throw err;
@@ -90,18 +95,20 @@ router.post("/api/torneos", async (req, res) => {
   }
 });
 
-
 // Actualizar un torneo existente
-router.put('/api/torneos/:id', async (req, res) => {
+router.put("/api/torneos/:id", async (req, res) => {
   try {
-    const [numFilasActualizadas, torneoActualizado] = await db.torneos.update(req.body, {
-      where: { ID_Torneo: req.params.id },
-      returning: true,
-    });
+    const [numFilasActualizadas, torneoActualizado] = await db.torneos.update(
+      req.body,
+      {
+        where: { ID_Torneo: req.params.id },
+        returning: true,
+      }
+    );
     if (torneoActualizado === 1) {
       res.sendStatus(204);
     } else {
-      res.status(404).json({ error: 'torneo no encontrado' });
+      res.status(404).json({ error: "torneo no encontrado" });
     }
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -109,18 +116,18 @@ router.put('/api/torneos/:id', async (req, res) => {
 });
 
 // Eliminar un torneo existente
-router.delete('/api/torneos/:id', async (req, res) => {
+router.delete("/api/torneos/:id", async (req, res) => {
   try {
     const numFilasEliminadas = await db.torneos.destroy({
       where: { ID_Torneo: req.params.id },
     });
     if (numFilasEliminadas === 1) {
-      res.json({ message: 'torneo eliminado correctamente' });
+      res.json({ message: "torneo eliminado correctamente" });
     } else {
-      res.status(404).json({ error: 'torneo no encontrado' });
+      res.status(404).json({ error: "torneo no encontrado" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el torneo' });
+    res.status(500).json({ error: "Error al eliminar el torneo" });
   }
 });
 
@@ -146,11 +153,8 @@ router.put("/api/torneo/suspender/:id", async (req, res) => {
       res.status(400).json({ message: messages });
     } else {
       throw err;
-    }
-  }
+    }
+  }
 });
-
-
-
 
 module.exports = router;

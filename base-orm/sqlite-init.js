@@ -141,23 +141,6 @@ async function CrearBaseSiNoExiste() {
     );
   }
 
-  // Posiciones
-  existe = false;
-  res = await db.get(
-    "SELECT count(*) as contar FROM sqlite_schema WHERE type = 'table' and name= 'posiciones'",
-    []
-  );
-  if (res.contar > 0) existe = true;
-  if (!existe) {
-    await db.run(
-      "CREATE table posiciones( IdPosicion INTEGER PRIMARY KEY AUTOINCREMENT, Nombre text NOT NULL UNIQUE);"
-    );
-    console.log("tabla posiciones creada!");
-    await db.run(
-      "insert into posiciones values	(1,'Arquero'),(2,'Defensor Central'),(3,'Lateral Izquierdo'),(4,'Lateral Derecho'),(5,'Mediocampista Defensivo'),(6,'Mediocampista'),(7,'Mediocampista Ofensivo'),(8,'Extremo Izquierdo'),(9,'Extremo Derecho'),(10,'Delantero Central');"
-    );
-  }
-
   // Verificar si la tabla ciudades existe
 
   // Verificar si la tabla sexo existe

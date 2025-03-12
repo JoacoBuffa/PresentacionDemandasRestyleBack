@@ -243,36 +243,6 @@ ciudades.hasOne(clubes, { foreignKey: "idCiudad" });
 entrenadores.belongsTo(tipoEntrenador, { foreignKey: "id_tipoEntrenador" });
 tipoEntrenador.hasOne(entrenadores, { foreignKey: "id_tipoEntrenador" });
 
-// Definición del modelo posiciones
-const posiciones = sequelize.define(
-  "posiciones",
-  {
-    IdPosicion: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    Nombre: {
-      // todo evitar que string autocomplete con espacios en blanco, debería ser varchar sin espacios
-      type: DataTypes.STRING(30),
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: "Nombre es requerido",
-        },
-        len: {
-          args: [5, 30],
-          msg: "Nombre debe ser tipo caracteres, entre 5 y 30 de longitud",
-        },
-      },
-    },
-  },
-  {
-    timestamps: false,
-  }
-);
-
 // Definición del modelo jugadores
 const parte = sequelize.define(
   "parte",
@@ -353,6 +323,8 @@ const parte = sequelize.define(
   },
   {
     timestamps: false,
+    tableName: "parte",
+    freezeTableName: true,
   }
 );
 
@@ -488,7 +460,7 @@ const torneos = sequelize.define(
 const sexo = sequelize.define(
   "sexo",
   {
-    Id_Sexo: {
+    IdSexo: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -514,13 +486,15 @@ const sexo = sequelize.define(
   },
   {
     timestamps: false,
+    tableName: "sexo",
+    freezeTableName: true,
   }
 );
 
 const tipodocumento = sequelize.define(
   "tipodocumento",
   {
-    Id_TipoDoc: {
+    IdTipoDoc: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -546,13 +520,15 @@ const tipodocumento = sequelize.define(
   },
   {
     timestamps: false,
+    tableName: "tipodocumento",
+    freezeTableName: true,
   }
 );
 
 const tipodomicilio = sequelize.define(
   "tipodomicilio",
   {
-    Id_TipoDomicilio: {
+    IdTipoDomicilio: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -578,6 +554,8 @@ const tipodomicilio = sequelize.define(
   },
   {
     timestamps: false,
+    tableName: "tipodomicilio",
+    freezeTableName: true,
   }
 );
 
@@ -600,7 +578,6 @@ module.exports = {
   entrenadores,
   ciudades,
   clubes,
-  posiciones,
   parte,
   temporadas,
   torneos,

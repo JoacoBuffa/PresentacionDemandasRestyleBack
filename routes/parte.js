@@ -8,7 +8,7 @@ router.get("/api/parte", async function (req, res) {
     let where = {};
     if (
       req.query.NombreApellido != undefined &&
-      req.query.NombreApellido !== ""
+      req.query.NombreApellido != ""
     ) {
       where.NombreApellido = {
         [Op.like]: "%" + req.query.NombreApellido + "%",
@@ -17,6 +17,19 @@ router.get("/api/parte", async function (req, res) {
     const Pagina = req.query.Pagina || 1;
     const TamañoPagina = 10;
     const { count, rows } = await db.parte.findAndCountAll({
+      include: [
+        { model: db.sexo, as: "sexo", attributes: ["Descripcion"] },
+        {
+          model: db.tipodocumento,
+          as: "tipodocumento",
+          attributes: ["Descripcion"],
+        },
+        {
+          model: db.tipodomicilio,
+          as: "tipodomicilio",
+          attributes: ["Descripcion"],
+        },
+      ],
       attributes: [
         "IdParte",
         "NombreApellido",
@@ -37,6 +50,7 @@ router.get("/api/parte", async function (req, res) {
 
     return res.json({ Items: rows, RegistrosTotal: count });
   } catch (error) {
+    console.error("Error al obtener las partes", error);
     return res.status(500).json({ error: "Error al obtener las partes" });
   }
 });
