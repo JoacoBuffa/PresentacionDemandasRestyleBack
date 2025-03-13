@@ -135,7 +135,8 @@ router.put("/api/parte/:id", async (req, res) => {
     item.Telefono = req.body.Telefono;
     await item.save();
 
-    res.sendStatus(204);
+    res.status(204);
+    res.json({ message: "Parte actualizada correctamente" });
   } catch (err) {
     if (err instanceof ValidationError) {
       // si son errores de validación, los devolvemos

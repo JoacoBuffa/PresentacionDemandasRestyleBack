@@ -35,18 +35,6 @@ app.get("/", (req, res) => {
   res.send("dds-backend iniciado!");
 });
 
-const tipoEntrenadorRouter = require("./routes/tipoEntrenador");
-app.use(tipoEntrenadorRouter);
-
-const entrenadoresRouter = require("./routes/entrenadores");
-app.use(entrenadoresRouter);
-
-const clubesRouter = require("./routes/clubes");
-app.use(clubesRouter);
-
-const ciudadesRouter = require("./routes/ciudades");
-app.use(ciudadesRouter);
-
 const parteRouter = require("./routes/parte");
 app.use(parteRouter);
 
@@ -58,12 +46,6 @@ app.use(tipodocumentoRouter);
 
 const tipodomicilioRouter = require("./routes/tipodomicilio");
 app.use(tipodomicilioRouter);
-
-const torneosRouter = require("./routes/torneos");
-app.use(torneosRouter);
-
-const temporadasRouter = require("./routes/temporadas");
-app.use(temporadasRouter);
 
 // levantar servidor
 if (!module.parent) {
